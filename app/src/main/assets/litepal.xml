@@ -1,0 +1,9 @@
+<litepal>
+    <dbname value="sun_day"/>
+    <version value="1"/>
+    <list>
+        <mapping class="com.example.gzp.sunday.db.Province"/>
+        <mapping class="com.example.gzp.sunday.db.City"/>
+        <mapping class="com.example.gzp.sunday.db.County"/>
+    </list>
+</litepal>
