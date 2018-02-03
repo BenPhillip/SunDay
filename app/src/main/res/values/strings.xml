@@ -3,4 +3,19 @@
     <string name="isLoading">正在加载</string>
     <string name="failure">加载失败</string>
     <string name="loadingFinish">加载完毕</string>
+    <string name="yubao">预报</string>
+    <string name="sport">运动指数</string>
+    <string name="comf">舒适指数</string>
+    <string name="carWash">洗车指数</string>
+    <string name="dress">穿衣指数</string>
+    <string name="flu">感冒指数</string>
+    <string name="trav">旅游指数</string>
+    <string name="uv">紫外线指数</string>
+    <string name="air">污染指数</string>
+    <string name="houly_forecast">小时预报</string>
+    <string name="update_weather_failure">更新天气信息失败</string>
+    <string name="weather_failure">天气信息错误</string>
+    <string name="update_success">更新成功</string>
+    <string name="tmp">%s℃</string>
+    <string name="min_max_tmp">%1$s℃ ~ %2$s℃</string>
 </resources>

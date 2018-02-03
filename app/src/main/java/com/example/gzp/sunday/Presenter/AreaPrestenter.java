@@ -7,25 +7,19 @@ import com.example.gzp.sunday.Model.AreaModel;
 import com.example.gzp.sunday.R;
 import com.example.gzp.sunday.Util.LogUtil;
 import com.example.gzp.sunday.View.Adapter.AreaAdapter;
-import com.example.gzp.sunday.db.City;
-import com.example.gzp.sunday.db.County;
-import com.example.gzp.sunday.db.Province;
+import com.example.gzp.sunday.data.db.City;
+import com.example.gzp.sunday.data.db.County;
+import com.example.gzp.sunday.data.db.Province;
 
 import org.litepal.crud.DataSupport;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action;
 import rx.functions.Action0;
 import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 import static com.example.gzp.sunday.View.Adapter.AreaAdapter.LEVEL_CITY;
-import static com.example.gzp.sunday.View.Adapter.AreaAdapter.LEVEL_COUNTY;
 import static com.example.gzp.sunday.View.Adapter.AreaAdapter.LEVEL_PROVINCE;
 
 /**
@@ -45,7 +39,9 @@ public class AreaPrestenter extends AreaContract.Presenter {
         this.mAdapter=areaAdapter;
     }
 
-
+    /**
+     * 查询省份
+     */
     @Override
     public void queryProvinces(){
         getView().getChooseAreaBinding()
@@ -70,7 +66,9 @@ public class AreaPrestenter extends AreaContract.Presenter {
         }
     }
 
-
+    /**
+     * 查询市区
+     */
     @Override
     public void queryCities() {
         Province province=mAdapter.getSelectedProvince();
@@ -97,6 +95,9 @@ public class AreaPrestenter extends AreaContract.Presenter {
         }
     }
 
+    /**
+     * 查询县
+     */
     @Override
     public void queryCounties() {
         getView().getChooseAreaBinding()
@@ -123,6 +124,10 @@ public class AreaPrestenter extends AreaContract.Presenter {
         }
     }
 
+    /**
+     * 调用接口获得列表
+     * @param type 查询类型
+     */
     @Override
     public void queryFromserver(String type) {
         LogUtil.v("List","http request "+type);
@@ -148,7 +153,9 @@ public class AreaPrestenter extends AreaContract.Presenter {
         }
     }
 
-
+    /**
+     * 中断操作
+     */
     @Override
     public void interruptHttp() {
 

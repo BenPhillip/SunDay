@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout  xmlns:android="http://schemas.android.com/apk/res/android"
+         xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="com.example.gzp.sunday.data.weather.Basic"/>
+        <variable
+            name="basic"
+            type="Basic"/>
+
+    </data>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+
+        <TextView
+            android:id="@+id/title_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:text="@{basic.cityName}"
+            tools:text="温州"
+            />
+
+        <TextView
+            android:id="@+id/title_update_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:textColor="#fff"
+            android:textSize="12sp"
+            tools:ignore="RelativeOverlap"
+            android:text="@{basic.update.updateTime.split(&quot; &quot;)[1]}"
+            tools:text="20:22"/>
+    </RelativeLayout>
+</layout>

@@ -3,15 +3,14 @@ package com.example.gzp.sunday.Model;
 import com.example.gzp.sunday.Contract.AreaContract;
 import com.example.gzp.sunday.Util.HttpUtil;
 import com.example.gzp.sunday.Util.LogUtil;
-import com.example.gzp.sunday.db.City;
-import com.example.gzp.sunday.db.County;
-import com.example.gzp.sunday.db.Province;
+import com.example.gzp.sunday.data.db.City;
+import com.example.gzp.sunday.data.db.County;
+import com.example.gzp.sunday.data.db.Province;
 
 import java.util.List;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -78,6 +77,7 @@ public class AreaModel implements AreaContract.Model {
         data.setCountyName(county.getCountyName());
         data.setCityId(cityId);
         data.setWeatherId(county.getWeatherId());
+        LogUtil.v("weather","weather id:"+county.getWeatherId());
         data.save();
     }
 

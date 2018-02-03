@@ -10,7 +10,7 @@ import android.support.v4.app.Fragment;
 public abstract class BaseFragment <V extends BaseView ,P extends BasePresenter<V>>
         extends Fragment implements BaseView  {
 
-    protected P presenter;
+    private P presenter;
 
 
 
@@ -37,5 +37,9 @@ public abstract class BaseFragment <V extends BaseView ,P extends BasePresenter<
 
 
     protected abstract P createPresenter();
+
+    protected P getPresenter() {
+        return presenter;
+    }
 
 }

@@ -1,8 +1,8 @@
 package com.example.gzp.sunday.Api;
 
-import com.example.gzp.sunday.db.City;
-import com.example.gzp.sunday.db.County;
-import com.example.gzp.sunday.db.Province;
+import com.example.gzp.sunday.data.db.City;
+import com.example.gzp.sunday.data.db.County;
+import com.example.gzp.sunday.data.db.Province;
 
 import java.util.List;
 
@@ -25,5 +25,7 @@ public interface AreaService {
 
     @GET("china/{provinceCode}/{cityCode}")
     Observable<List<County>>getCounty(@Path("provinceCode")int code, @Path("cityCode")int code1);
+
+
 
 }

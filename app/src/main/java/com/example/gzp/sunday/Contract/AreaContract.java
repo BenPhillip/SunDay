@@ -5,9 +5,9 @@ import com.example.gzp.sunday.Base.BasePresenter;
 import com.example.gzp.sunday.Base.BaseView;
 
 import com.example.gzp.sunday.databinding.ChooseAreaBinding;
-import com.example.gzp.sunday.db.City;
-import com.example.gzp.sunday.db.County;
-import com.example.gzp.sunday.db.Province;
+import com.example.gzp.sunday.data.db.City;
+import com.example.gzp.sunday.data.db.County;
+import com.example.gzp.sunday.data.db.Province;
 
 import java.util.List;
 

@@ -6,6 +6,9 @@ import android.util.Log;
  * Created by Ben on 2017/12/9.
  */
 
+/**
+ * 日志类
+ */
 public class LogUtil {
     private static final int VERBOSE=1;
     private static final int DEBUG=2;
@@ -39,6 +42,11 @@ public class LogUtil {
     public static void e(String tag, String msg) {
         if (level <= ERROR) {
             Log.e(tag,msg);
+        }
+    }
+    public static void e(String tag, String msg,Throwable e) {
+        if (level <= ERROR) {
+            Log.e(tag,msg,e);
         }
     }
 }

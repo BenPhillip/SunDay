@@ -3,6 +3,7 @@ package com.example.gzp.sunday.Util;
 
 
 import com.example.gzp.sunday.Api.AreaService;
+import com.example.gzp.sunday.Api.WeatherService;
 
 import java.util.concurrent.TimeUnit;
 
@@ -17,10 +18,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Ben on 2017/12/9.
  */
 
+/**
+ * 网络请求
+ */
 public class HttpUtil {
     private static final int DEFAULT_TIMEOUT = 5;
     private static final String BASE_URL = "http://guolin.tech/api/";
     private AreaService mAreaService;
+    private WeatherService mWeatherService;
 
     private HttpUtil(){
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -28,8 +33,7 @@ public class HttpUtil {
 
         OkHttpClient client=new OkHttpClient
                 .Builder()
-               // .addInterceptor(new CustomInterceptor())
-                .addInterceptor(logging)
+                .addInterceptor(logging) //拦截请求，输出日志
                 .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
                 .build();
 
@@ -41,6 +45,7 @@ public class HttpUtil {
                 .build();
 
         mAreaService = retrofit.create(AreaService.class);
+        mWeatherService=retrofit.create(WeatherService.class);
     }
     private static class SingleHolder{
         private static final HttpUtil INSTANCE=new HttpUtil();
@@ -53,7 +58,7 @@ public class HttpUtil {
     public AreaService getAreaService(){
         return this.mAreaService;
     }
-
+    public WeatherService getWeatherService(){return this.mWeatherService;}
 
 
 

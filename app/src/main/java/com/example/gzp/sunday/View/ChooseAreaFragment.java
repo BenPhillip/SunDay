@@ -57,15 +57,15 @@ public class ChooseAreaFragment extends BaseFragment<AreaContract.View,
 
         mChooseAreaBinding.areaRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL,false));
-        mAdapter=new AreaAdapter(dataList, getContext(), new AreaAdapter.ItemClickCallback() {
+        mAdapter=new AreaAdapter(dataList, getActivity(), new AreaAdapter.ItemClickCallback() {
             @Override
             public void queryCities() {
-                presenter.queryCities();
+                getPresenter().queryCities();
             }
 
             @Override
             public void queryCounties() {
-                presenter.queryCounties();
+                getPresenter().queryCounties();
             }
         });
         LogUtil.v(getClass().toString(),"oncreateView");
@@ -80,15 +80,16 @@ public class ChooseAreaFragment extends BaseFragment<AreaContract.View,
             if ( mAdapter.getLevel()== LEVEL_CITY) {
                 LogUtil.v("List","button city");
                 mAdapter.setLevel(LEVEL_PROVINCE);
-                presenter.queryProvinces();
+                getPresenter().queryProvinces();
             } else if (mAdapter.getLevel()== LEVEL_COUNTY) {
                 LogUtil.v("List","button county");
                mAdapter.setLevel(LEVEL_CITY);
-                presenter.queryCities();
+                getPresenter().queryCities();
             }else{
                 LogUtil.v("List","button back");
             }
         });
+
 
 
         return mChooseAreaBinding.getRoot();
@@ -97,7 +98,7 @@ public class ChooseAreaFragment extends BaseFragment<AreaContract.View,
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        presenter.queryProvinces();
+        getPresenter().queryProvinces();
     }
 
     @Override

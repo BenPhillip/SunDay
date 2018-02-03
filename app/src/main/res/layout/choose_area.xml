@@ -16,8 +16,10 @@
 
     <TextView
         android:id="@+id/title_text"
-        android:layout_width="384dp"
-        android:layout_height="59dp"
+        android:layout_width="0dp"
+        android:layout_height="?android:actionBarSize"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
         android:background="?attr/colorPrimary"
         android:gravity="center"
         android:textColor="#fff"

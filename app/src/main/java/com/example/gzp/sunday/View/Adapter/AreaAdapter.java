@@ -1,6 +1,7 @@
 package com.example.gzp.sunday.View.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,17 +11,20 @@ import android.view.ViewGroup;
 import com.example.gzp.sunday.R;
 import com.example.gzp.sunday.Util.LogUtil;
 
+import com.example.gzp.sunday.View.MainActivity;
+import com.example.gzp.sunday.View.WeatherActivity;
 import com.example.gzp.sunday.databinding.AreaItemBinding;
-import com.example.gzp.sunday.db.City;
-import com.example.gzp.sunday.db.County;
-import com.example.gzp.sunday.db.Province;
+import com.example.gzp.sunday.data.db.City;
+import com.example.gzp.sunday.data.db.County;
+import com.example.gzp.sunday.data.db.Province;
 
 import java.util.List;
 
-/**
- * Created by Ben on 2017/12/23.
- */
 
+
+/**
+ * 省市县列表适配器
+ */
 public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder> {
     private Context mContext;
     private ItemClickCallback mCallback;
@@ -39,6 +43,7 @@ public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder
 
     private Province selectedProvince;
     private City selectedCity;
+
 
     public AreaAdapter(List<String> dataList, Context context,ItemClickCallback callback) {
         this.dataList = dataList;
@@ -78,6 +83,10 @@ public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder
               //  holder.bind(dataList.get(position), city);
                 break;
             // queryCounties();
+            case LEVEL_COUNTY:
+                LogUtil.v("List","county--->"+dataList.get(position));
+                County county = mCountyList.get(position);
+                holder.bind(dataList.get(position),county);
             default:
                 LogUtil.v("List","county--->"+dataList.get(position));
                 holder.bind(dataList.get(position));
@@ -105,6 +114,7 @@ public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder
         private AreaItemBinding mAreaItemBinding;
         private Province mProvince;
         private City mCity;
+        private County mCounty;
 
 
         public AreaViewHolder(AreaItemBinding binding) {
@@ -132,6 +142,12 @@ public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder
             this.mCity = city;
 
         }
+         public void bind(String title, County county) {
+             this.bind(title);
+             this.mCounty=county;
+             //LogUtil.v("weather",mCounty.getWeatherId());
+
+         }
 
 
 
@@ -146,6 +162,16 @@ public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder
                 selectedCity = mCity;
                 currentLevel = LEVEL_COUNTY;
                 mCallback.queryCounties();
+            } else if (currentLevel == LEVEL_COUNTY) {
+                String id = mCounty.getWeatherId();
+                LogUtil.d("weather","put id :"+id);
+                Intent intent = new Intent(mContext, WeatherActivity.class);
+                intent.putExtra(WeatherActivity.WEATHER_ID, id);
+
+                MainActivity activity = (MainActivity) mContext;
+                activity.startActivity(intent);
+                activity.finish();
+
             }
         }
     }
