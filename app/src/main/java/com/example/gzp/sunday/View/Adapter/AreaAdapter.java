@@ -1,5 +1,6 @@
 package com.example.gzp.sunday.View.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import com.example.gzp.sunday.R;
 import com.example.gzp.sunday.Util.LogUtil;
 
+import com.example.gzp.sunday.Util.Utility;
 import com.example.gzp.sunday.View.MainActivity;
 import com.example.gzp.sunday.View.WeatherActivity;
 import com.example.gzp.sunday.databinding.AreaItemBinding;
@@ -163,14 +165,24 @@ public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder
                 currentLevel = LEVEL_COUNTY;
                 mCallback.queryCounties();
             } else if (currentLevel == LEVEL_COUNTY) {
+                Activity activity=(Activity)mContext;
                 String id = mCounty.getWeatherId();
                 LogUtil.d("weather","put id :"+id);
-                Intent intent = new Intent(mContext, WeatherActivity.class);
-                intent.putExtra(WeatherActivity.WEATHER_ID, id);
+                if(activity instanceof MainActivity ){
 
-                MainActivity activity = (MainActivity) mContext;
-                activity.startActivity(intent);
-                activity.finish();
+                    Intent intent = new Intent(mContext, WeatherActivity.class);
+                    intent.putExtra(Utility.WEATHER_ID, id);
+
+
+                    activity.startActivity(intent);
+                    activity.finish();
+                }else if(activity instanceof WeatherActivity){
+                    WeatherActivity weatherActivity=(WeatherActivity)mContext;
+                    weatherActivity.getWeatherLayout().drawerLayout.closeDrawers();
+                    weatherActivity.getWeatherLayout().swipeRefresh.setRefreshing(true);
+                    weatherActivity.getPresenter().getWeather(id);
+                }
+
 
             }
         }

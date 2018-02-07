@@ -1,11 +1,13 @@
 package com.example.gzp.sunday.View;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 
 import android.preference.PreferenceManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,16 +30,18 @@ import com.example.gzp.sunday.View.Adapter.HourlyForecastAdapter;
 import com.example.gzp.sunday.data.weather.Forecast;
 import com.example.gzp.sunday.data.weather.HeWeather;
 import com.example.gzp.sunday.databinding.ActivityWeatherBinding;
+import com.example.gzp.sunday.service.AutoUpdateService;
 import com.google.gson.Gson;
 
 /**
  * Created by BenPhillip on 2018/1/27.
  */
 
+
 public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherContract.Presenter>
         implements WeatherContract.View {
-    public static final String DEFAULT_WEATHER="weather";
-    public static final String WEATHER_ID="weather_id";
+    //public static final String DEFAULT_WEATHER="weather";
+    //public static final String WEATHER_ID="weather_id";
     private ActivityWeatherBinding mWeatherBinding;
     private RecyclerView hourlyRecyclerView;
     private SwipeRefreshLayout mRefreshLayout;
@@ -56,18 +60,22 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
                         LinearLayout.HORIZONTAL, false));
 
         mRefreshLayout=mWeatherBinding.swipeRefresh;
+        mWeatherBinding.weatherTitle.navButton.setOnClickListener((view)->{
+            mWeatherBinding.drawerLayout.openDrawer(GravityCompat.START);
+        });
 
 
         SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
-        String weatherString=preferences.getString(DEFAULT_WEATHER,null);
+        String weatherString=preferences.getString(Utility.WEATHER,null);
         String weatherId;
         if(weatherString!=null){
-            HeWeather.Weather weather=new Gson()
-                    .fromJson(weatherString, HeWeather.Weather.class);
+            HeWeather.Weather weather=Utility.getWeather(weatherString);
             weatherId=weather.basic.weatherId;
            loadWeather(weather);
+            Intent intent = new Intent(this, AutoUpdateService.class);
+            startService(intent);
         }else{
-            weatherId=getIntent().getStringExtra(WEATHER_ID);
+            weatherId=getIntent().getStringExtra(Utility.WEATHER_ID);
             LogUtil.d("weather","id:"+weatherId);
             mWeatherBinding.weatherLayout.setVisibility(View.INVISIBLE);
             getPresenter().getWeather(weatherId);
@@ -110,6 +118,8 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
         Utility.loadWeatherBackground(weatherBackground,code);
 
 
+
+
     }
 
     @Override
@@ -117,7 +127,7 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
         PreferenceManager
                 .getDefaultSharedPreferences(WeatherActivity.this)
                 .edit()
-                .putString(DEFAULT_WEATHER,weatherString)
+                .putString(Utility.WEATHER,weatherString)
                 .apply();
     }
 

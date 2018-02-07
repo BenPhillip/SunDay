@@ -42,7 +42,7 @@ public abstract class BaseActivity<V extends BaseView ,P extends BasePresenter<V
 
     protected abstract P createPresenter();
 
-    protected P getPresenter() {
+    public P getPresenter() {
         return this.presenter;
     }
 
