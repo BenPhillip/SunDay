@@ -1,13 +1,24 @@
 package com.example.gzp.sunday.Presenter;
 
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.widget.TextView;
+
 import com.example.gzp.sunday.Api.WeatherService;
 import com.example.gzp.sunday.Contract.WeatherContract;
 import com.example.gzp.sunday.Model.WeatherModel;
 import com.example.gzp.sunday.R;
 import com.example.gzp.sunday.Util.LogUtil;
+import com.example.gzp.sunday.View.LocationActivity;
 import com.example.gzp.sunday.data.weather.HeWeather;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -18,6 +29,7 @@ import rx.Subscriber;
 
 public class WeatherPresenter extends WeatherContract.Presenter {
     private WeatherContract.Model mModel;
+
 
 
 
@@ -59,6 +71,20 @@ public class WeatherPresenter extends WeatherContract.Presenter {
                     }
                 });
     }
+
+    @Override
+    public void getLocationCity(String location) {
+        new WeatherModel().getCityInfo(location, WeatherService.key)
+                .subscribe(result -> {
+                    if(result.status.equals("ok")){
+                        String id=result.basic.cityId;
+                        getView().setSwipeRefresh(id);
+                        getWeather(id);
+                    }
+                });
+    }
+
+
 
 
 }

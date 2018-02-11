@@ -1,12 +1,16 @@
 package com.example.gzp.sunday.View;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.baidu.location.LocationClient;
 import com.example.gzp.sunday.BR;
 import com.example.gzp.sunday.Base.BaseActivity;
 
@@ -31,7 +36,9 @@ import com.example.gzp.sunday.data.weather.Forecast;
 import com.example.gzp.sunday.data.weather.HeWeather;
 import com.example.gzp.sunday.databinding.ActivityWeatherBinding;
 import com.example.gzp.sunday.service.AutoUpdateService;
-import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by BenPhillip on 2018/1/27.
@@ -45,6 +52,8 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
     private ActivityWeatherBinding mWeatherBinding;
     private RecyclerView hourlyRecyclerView;
     private SwipeRefreshLayout mRefreshLayout;
+    private LocationClient mLocationClient;
+
 
 
 
@@ -64,29 +73,93 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
             mWeatherBinding.drawerLayout.openDrawer(GravityCompat.START);
         });
 
-
-        SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
-        String weatherString=preferences.getString(Utility.WEATHER,null);
-        String weatherId;
-        if(weatherString!=null){
-            HeWeather.Weather weather=Utility.getWeather(weatherString);
-            weatherId=weather.basic.weatherId;
-           loadWeather(weather);
-            Intent intent = new Intent(this, AutoUpdateService.class);
-            startService(intent);
-        }else{
-            weatherId=getIntent().getStringExtra(Utility.WEATHER_ID);
-            LogUtil.d("weather","id:"+weatherId);
-            mWeatherBinding.weatherLayout.setVisibility(View.INVISIBLE);
-            getPresenter().getWeather(weatherId);
-        }
-
-        mRefreshLayout.setOnRefreshListener(()->{
-            getPresenter().getWeather(weatherId);
+        mLocationClient = new LocationClient(getApplicationContext());
+        mLocationClient.registerLocationListener(bdLocation->{
+            String location=bdLocation.getLongitude()+","+bdLocation.getLatitude();
+            getPresenter().getLocationCity(location);
+            mLocationClient.stop();
         });
 
 
 
+
+        SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
+        String weatherString=preferences.getString(Utility.WEATHER,null);
+        //String weatherId;
+
+
+        if(weatherString!=null){
+            HeWeather.Weather weather=Utility.getWeather(weatherString);
+           // weatherId=weather.basic.weatherId;
+           loadWeather(weather);
+            Intent intent = new Intent(this, AutoUpdateService.class);
+            startService(intent);
+        }else{
+           // weatherId=getIntent().getStringExtra(Utility.WEATHER_ID);
+            //LogUtil.d("weather","id:"+weatherId);
+            mWeatherBinding.weatherLayout.setVisibility(View.INVISIBLE);
+
+        }
+
+        setPermissions();
+
+
+
+
+
+
+
+
+    }
+
+    private void setPermissions(){
+        List<String> permisstionList = new ArrayList<>();
+        if (ContextCompat.checkSelfPermission
+                (WeatherActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            permisstionList.add("Manifest.permission.ACCESS_FINE_LOCATION");
+        }
+        if (ContextCompat.checkSelfPermission
+                (WeatherActivity.this, Manifest.permission.READ_PHONE_STATE)
+                != PackageManager.PERMISSION_GRANTED) {
+            permisstionList.add("READ_PHONE_STATE");
+        }
+        if (ContextCompat.checkSelfPermission
+                (WeatherActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            permisstionList.add("WRITE_EXTERNAL_STORAGE");
+        }
+        if (!permisstionList.isEmpty()) {
+            String [] permissions=permisstionList.toArray(new String[permisstionList.size()]);
+            ActivityCompat.requestPermissions(this, permissions, 1);
+        }else{
+            mLocationClient.start();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permisstions, int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0) {
+                    for (int result:grantResults) {
+                        if (result != PackageManager.PERMISSION_GRANTED) {
+                            Toast.makeText(this,"must permit all ",Toast.LENGTH_LONG).show();
+                            finish();
+                            return;
+                        }
+                    }
+                    mLocationClient.start();
+                }else {
+                    Toast.makeText(this,"unkonw error",Toast.LENGTH_LONG).show();
+                    finish();
+                }
+                break;
+            default:
+
+
+        }
     }
 
     @Override
@@ -122,6 +195,8 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
 
     }
 
+
+
     @Override
     public void saveWeatherInfo(String weatherString) {
         PreferenceManager
@@ -142,6 +217,13 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
     }
 
     @Override
+    public void setSwipeRefresh(String cityId) {
+        mRefreshLayout.setOnRefreshListener(()->{
+            getPresenter().getWeather(cityId);
+        });
+    }
+
+    @Override
     protected WeatherContract.Presenter createPresenter() {
         return new WeatherPresenter();
     }
@@ -155,6 +237,7 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
     public ActivityWeatherBinding getWeatherLayout() {
         return this.mWeatherBinding;
     }
+
 
 }
 

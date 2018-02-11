@@ -2,6 +2,7 @@ package com.example.gzp.sunday.Model;
 
 import com.example.gzp.sunday.Contract.WeatherContract;
 import com.example.gzp.sunday.Util.HttpUtil;
+import com.example.gzp.sunday.data.CityLocation;
 import com.example.gzp.sunday.data.weather.HeWeather;
 import com.google.gson.Gson;
 
@@ -27,6 +28,17 @@ public class WeatherModel implements WeatherContract.Model {
                     public HeWeather.Weather call(HeWeather heWeather) {
                         return heWeather.weather.get(0);
                     }
+                })
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public Observable<CityLocation.Location> getCityInfo(String location,String key){
+        return HttpUtil.getInstance().getWeatherService()
+                .getLocation(location,key)
+                .subscribeOn(Schedulers.io())
+                .map(cityLocation -> {
+                    return cityLocation.locations.get(0);
                 })
                 .observeOn(AndroidSchedulers.mainThread());
     }

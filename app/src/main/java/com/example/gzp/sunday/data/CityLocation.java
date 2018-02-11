@@ -2,30 +2,37 @@ package com.example.gzp.sunday.data;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by BenPhillip on 2018/2/7.
  */
 
 public class CityLocation {
+    @SerializedName("HeWeather6")
+    public List<Location> locations;
 
-    public String status;
+    public class Location {
 
-    public Info basic;
+        public String status;
 
-    public class Info{
-        @SerializedName("cid")
-        public String cityId;
+        public Info basic;
 
-        @SerializedName("cnty")
-        public String country;
+        public class Info {
+            @SerializedName("cid")
+            public String cityId;
 
-        @SerializedName("location")
-        public String city;
+            @SerializedName("cnty")
+            public String country;
 
-        @SerializedName("parent_city")
-        public String parentCity;
+            @SerializedName("location")
+            public String city;
 
-        @SerializedName("admin_area")
-        public String province;
+            @SerializedName("parent_city")
+            public String parentCity;
+
+            @SerializedName("admin_area")
+            public String province;
+        }
     }
 }

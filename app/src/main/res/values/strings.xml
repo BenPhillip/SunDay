@@ -18,4 +18,10 @@
     <string name="update_success">更新成功</string>
     <string name="tmp">%s℃</string>
     <string name="min_max_tmp">%1$s℃ ~ %2$s℃</string>
+    <string name="choose_city">添加城市</string>
+    <string name="manage_city">城市管理</string>
+    <string name="setting">设置</string>
+    <string name="about">关于</string>
+    <string name="data_from">天气数据来自和风天气</string>
+    <string name="email">p627121110@163.com</string>
 </resources>

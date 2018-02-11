@@ -15,9 +15,10 @@ public class WeatherServiceTest {
 
     @Test
     public void getLocation(){
-        HttpUtil.getInstance().getWeatherService().getLocation("CN101210706",
+        HttpUtil.getInstance().getWeatherService().getLocation("auto_ip",
                 WeatherService.key).subscribe((cityLocation -> {
-                    assertThat(cityLocation.basic.cityId,is("CN101210706"));
+                    assertEquals(cityLocation.locations.get(0).status,"ok");
+                    //assertEquals(cityLocation.basic.cityId,"CN101210706");
 
         }));
     }
