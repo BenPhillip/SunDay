@@ -1,8 +1,6 @@
 package com.example.gzp.sunday.View;
 
 import android.Manifest;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
@@ -10,32 +8,36 @@ import android.os.Bundle;
 
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.baidu.location.LocationClient;
 import com.example.gzp.sunday.BR;
 import com.example.gzp.sunday.Base.BaseActivity;
 
-import com.example.gzp.sunday.Contract.WeatherContract;
+import com.example.gzp.sunday.Contract.LocationContract;
+import com.example.gzp.sunday.Presenter.LocationPresenter;
 import com.example.gzp.sunday.Presenter.WeatherPresenter;
 import com.example.gzp.sunday.R;
 import com.example.gzp.sunday.Util.LogUtil;
 import com.example.gzp.sunday.Util.Utility;
 import com.example.gzp.sunday.View.Adapter.HourlyForecastAdapter;
+import com.example.gzp.sunday.data.db.MyCollection;
 import com.example.gzp.sunday.data.weather.Forecast;
 import com.example.gzp.sunday.data.weather.HeWeather;
-import com.example.gzp.sunday.databinding.ActivityWeatherBinding;
-import com.example.gzp.sunday.service.AutoUpdateService;
+
+
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,15 +47,22 @@ import java.util.List;
  */
 
 
-public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherContract.Presenter>
-        implements WeatherContract.View {
+public class WeatherActivity extends BaseActivity<LocationContract.View,LocationContract.Presenter>
+        implements LocationContract.View {
     //public static final String DEFAULT_WEATHER="weather";
     //public static final String WEATHER_ID="weather_id";
-    private ActivityWeatherBinding mWeatherBinding;
+   // private ActivityWeatherBinding mWeatherBinding;
     private RecyclerView hourlyRecyclerView;
     private SwipeRefreshLayout mRefreshLayout;
+
+
+
+
+
+
     private LocationClient mLocationClient;
 
+    private ViewPager mViewPager;
 
 
 
@@ -61,7 +70,8 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStatusBar();
-        mWeatherBinding = DataBindingUtil.setContentView(this,R.layout.activity_weather);
+        setContentView(R.layout.activity_weather);
+       /* mWeatherBinding = DataBindingUtil.setContentView(this,R.layout.fragment_weather);
         hourlyRecyclerView= mWeatherBinding.weatherHourlyForecast
                 .hourForecastRecyclerView;
         hourlyRecyclerView
@@ -71,24 +81,58 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
         mRefreshLayout=mWeatherBinding.swipeRefresh;
         mWeatherBinding.weatherTitle.navButton.setOnClickListener((view)->{
             mWeatherBinding.drawerLayout.openDrawer(GravityCompat.START);
-        });
-
-        mLocationClient = new LocationClient(getApplicationContext());
+        });*/
+        mLocationClient = new LocationClient(this);
+        List<MyCollection> mCollectionList= getPresenter().loadCollections();
         mLocationClient.registerLocationListener(bdLocation->{
             String location=bdLocation.getLongitude()+","+bdLocation.getLatitude();
-            getPresenter().getLocationCity(location);
-            mLocationClient.stop();
+            //应用是否第一次启动
+            getPresenter().getLocationCity(location,
+                    mCollectionList.isEmpty());
+            LogUtil.d("LocationPresenter","load");
         });
+        LogUtil.d("LocationPresenter","create");
+        if(setPermissions()){
+            mLocationClient.start();
+        }
+
+        mViewPager = (ViewPager) findViewById(R.id.weather_view_pager);
+       FragmentManager manager=getSupportFragmentManager();
+       mViewPager.setAdapter(new FragmentPagerAdapter(manager) {
+           @Override
+           public Fragment getItem(int position) {
+               MyCollection collection = mCollectionList.get(position);
+               return WeatherFragment.newInstance(collection);
+           }
+
+           @Override
+           public int getCount() {
+               return mCollectionList.size();
+           }
+       });
+
+      // mViewPager.setOffscreenPageLimit(4);
 
 
 
 
-        SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
-        String weatherString=preferences.getString(Utility.WEATHER,null);
+
+
+
+
+
+
+
+
+
+
+
+       // SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(this);
+       // String weatherString=preferences.getString(Utility.WEATHER,null);
         //String weatherId;
 
 
-        if(weatherString!=null){
+        /*if(weatherString!=null){
             HeWeather.Weather weather=Utility.getWeather(weatherString);
            // weatherId=weather.basic.weatherId;
            loadWeather(weather);
@@ -99,9 +143,9 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
             //LogUtil.d("weather","id:"+weatherId);
             mWeatherBinding.weatherLayout.setVisibility(View.INVISIBLE);
 
-        }
+        }*/
 
-        setPermissions();
+
 
 
 
@@ -112,7 +156,13 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
 
     }
 
-    private void setPermissions(){
+    @Override
+    protected LocationContract.Presenter createPresenter() {
+        return new LocationPresenter();
+    }
+
+
+    private boolean setPermissions(){
         List<String> permisstionList = new ArrayList<>();
         if (ContextCompat.checkSelfPermission
                 (WeatherActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -133,8 +183,9 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
             String [] permissions=permisstionList.toArray(new String[permisstionList.size()]);
             ActivityCompat.requestPermissions(this, permissions, 1);
         }else{
-            mLocationClient.start();
+           return true;
         }
+        return false;
 
     }
 
@@ -161,6 +212,20 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
 
         }
     }
+
+    @Override
+    public void addCollection(MyCollection collection) {
+        getPresenter().getCollectionList().add(0,collection);
+    }
+
+    @Override
+    public void updateList() {
+        //TODO:update viewpager
+        mViewPager.getAdapter().notifyDataSetChanged();
+
+    }
+
+/*
 
     @Override
     public void loadWeather(HeWeather.Weather weather){
@@ -195,8 +260,6 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
 
     }
 
-
-
     @Override
     public void saveWeatherInfo(String weatherString) {
         PreferenceManager
@@ -224,8 +287,8 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
     }
 
     @Override
-    protected WeatherContract.Presenter createPresenter() {
-        return new WeatherPresenter();
+    protected LocationContract.Presenter createPresenter() {
+        return new LocationPresenter();
     }
 
     @Override
@@ -233,12 +296,15 @@ public class WeatherActivity extends BaseActivity<WeatherContract.View,WeatherCo
         Toast.makeText(this, getString(Rstring),Toast.LENGTH_LONG).show();
     }
 
+
+
+
     @Override
     public ActivityWeatherBinding getWeatherLayout() {
         return this.mWeatherBinding;
     }
 
-
+    */
 }
 
 

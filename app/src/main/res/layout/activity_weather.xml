@@ -1,67 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <FrameLayout
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/weather_default">
+    <android.support.v4.view.ViewPager
+        android:id="@+id/weather_view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary">
-        <ImageView
-            android:id="@+id/weather_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"/>
-        <android.support.v4.widget.DrawerLayout
-            android:id="@+id/drawer_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v4.widget.SwipeRefreshLayout
-                    android:id="@+id/swipe_refresh"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <ScrollView
-                        android:id="@+id/weather_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scrollbars="none"
-                        android:overScrollMode="never"
-                        android:fitsSystemWindows="true">
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <include
-                                android:id="@+id/weather_title"
-                                layout="@layout/title"/>
-                            <include
-                                android:id="@+id/weather_now"
-                                layout="@layout/now"/>
-                            <include
-                                android:id="@+id/weather_aqi"
-                                layout="@layout/aqi"/>
-                            <include
-                                android:id="@+id/weather_hourly_forecast"
-                                layout="@layout/hourly_forecast"/>
-                            <include
-                                android:id="@+id/weather_forecast"
-                                layout="@layout/forecast"/>
-                            <include
-                                android:id="@+id/weather_suggestion"
-                                layout="@layout/suggestion"/>
-                        </LinearLayout>
-                    </ScrollView>
-                </android.support.v4.widget.SwipeRefreshLayout>
-
-
-            <android.support.design.widget.NavigationView
-                android:id="@+id/nav_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="start"
-                app:menu="@menu/nav_menu"
-                app:headerLayout="@layout/nav_header"/>
-        </android.support.v4.widget.DrawerLayout>
-
-    </FrameLayout>
-</layout>
+        android:layout_height="match_parent"/>
+</LinearLayout>

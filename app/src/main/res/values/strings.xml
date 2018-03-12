@@ -14,6 +14,7 @@
     <string name="air">污染指数</string>
     <string name="houly_forecast">小时预报</string>
     <string name="update_weather_failure">更新天气信息失败</string>
+
     <string name="weather_failure">天气信息错误</string>
     <string name="update_success">更新成功</string>
     <string name="tmp">%s℃</string>

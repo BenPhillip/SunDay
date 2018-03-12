@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.gzp.sunday.Api.WeatherService;
 import com.example.gzp.sunday.Contract.WeatherContract;
@@ -14,6 +15,7 @@ import com.example.gzp.sunday.Model.WeatherModel;
 import com.example.gzp.sunday.R;
 import com.example.gzp.sunday.Util.LogUtil;
 import com.example.gzp.sunday.View.LocationActivity;
+import com.example.gzp.sunday.View.WeatherActivity;
 import com.example.gzp.sunday.data.weather.HeWeather;
 import com.google.gson.Gson;
 
@@ -27,7 +29,7 @@ import rx.Subscriber;
  * Created by BenPhillip on 2018/1/27.
  */
 
-public class WeatherPresenter extends WeatherContract.Presenter {
+public class WeatherPresenter extends WeatherContract.Presenter  {
     private WeatherContract.Model mModel;
 
 
@@ -62,8 +64,7 @@ public class WeatherPresenter extends WeatherContract.Presenter {
                     @Override
                     public void onNext(HeWeather.Weather weather) {
                         if(weather!=null&&"ok".equals(weather.status)){
-                            String weatherString=new Gson().toJson(weather);
-                           getView().saveWeatherInfo(weatherString);
+                           mModel.saveWeatherInfo(weather);
                            getView().loadWeather(weather);
                         }else{
                             Observable.error(new Throwable("天气信息错误"));
@@ -71,7 +72,7 @@ public class WeatherPresenter extends WeatherContract.Presenter {
                     }
                 });
     }
-
+/*
     @Override
     public void getLocationCity(String location) {
         new WeatherModel().getCityInfo(location, WeatherService.key)
@@ -83,7 +84,7 @@ public class WeatherPresenter extends WeatherContract.Presenter {
                     }
                 });
     }
-
+*/
 
 
 

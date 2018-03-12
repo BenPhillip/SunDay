@@ -3,6 +3,7 @@ package com.example.gzp.sunday.Model;
 import com.example.gzp.sunday.Contract.WeatherContract;
 import com.example.gzp.sunday.Util.HttpUtil;
 import com.example.gzp.sunday.data.CityLocation;
+import com.example.gzp.sunday.data.db.MyCollection;
 import com.example.gzp.sunday.data.weather.HeWeather;
 import com.google.gson.Gson;
 
@@ -41,6 +42,15 @@ public class WeatherModel implements WeatherContract.Model {
                     return cityLocation.locations.get(0);
                 })
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public void saveWeatherInfo(HeWeather.Weather weather) {
+        String id=weather.basic.weatherId;
+        String info=new Gson().toJson(weather);
+        MyCollection collection=new MyCollection();
+        collection.setWeatherInfo(info);
+        collection.saveOrUpdateAsync("cityId = ?" ,id);
     }
 
 }

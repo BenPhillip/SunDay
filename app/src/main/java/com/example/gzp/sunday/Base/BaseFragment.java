@@ -4,7 +4,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 /**
- * Created by Ben on 2017/12/22.
+ * {onAttach(Context) onCreate(Bundle) onCreatView }=> setContentView()
+ * onActivityCreated(Bundle)
+ * onStart() onResume() onPause onStop
+ * onDestroyView()
+ * onDetach() onDestroy()
  */
 
 public abstract class BaseFragment <V extends BaseView ,P extends BasePresenter<V>>

@@ -14,7 +14,8 @@ import com.example.gzp.sunday.Util.LogUtil;
 
 import com.example.gzp.sunday.Util.Utility;
 import com.example.gzp.sunday.View.MainActivity;
-import com.example.gzp.sunday.View.WeatherActivity;
+
+import com.example.gzp.sunday.View.WeatherFragment;
 import com.example.gzp.sunday.databinding.AreaItemBinding;
 import com.example.gzp.sunday.data.db.City;
 import com.example.gzp.sunday.data.db.County;
@@ -168,20 +169,20 @@ public class AreaAdapter extends RecyclerView.Adapter<AreaAdapter.AreaViewHolder
                 Activity activity=(Activity)mContext;
                 String id = mCounty.getWeatherId();
                 LogUtil.d("weather","put id :"+id);
-                if(activity instanceof MainActivity ){
+                /*if(activity instanceof MainActivity ){
 
-                    Intent intent = new Intent(mContext, WeatherActivity.class);
+                    Intent intent = new Intent(mContext, WeatherFragment.class);
                     intent.putExtra(Utility.WEATHER_ID, id);
 
 
                     activity.startActivity(intent);
                     activity.finish();
                 }else if(activity instanceof WeatherActivity){
-                    WeatherActivity weatherActivity=(WeatherActivity)mContext;
+                    WeatherFragment weatherFragment=(WeatherFragment) mContext;
                     weatherActivity.getWeatherLayout().drawerLayout.closeDrawers();
                     weatherActivity.getWeatherLayout().swipeRefresh.setRefreshing(true);
                     weatherActivity.getPresenter().getWeather(id);
-                }
+                }*/
 
 
             }
